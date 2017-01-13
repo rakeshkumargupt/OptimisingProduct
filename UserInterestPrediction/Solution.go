@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"os"
+	"sort"
 )
 
 type Product []struct {
@@ -48,6 +49,7 @@ type UserPref []struct {
 type ArrayDataType []string
 var UserMap map[string]ArrayDataType
 var ColorMap, SizeMap map[int]string
+var ProductRating map[string]int
 
 func main() {
 
@@ -120,15 +122,16 @@ func main() {
 
 		for productIndex := range ProductVar{
 
+			var Rating int = 0
 			ProductId := ProductVar[productIndex].ProductID
 			AvailableColorData := ProductVar[productIndex].AvailableColor
 			AvailableSizeData := ProductVar[productIndex].AvailableSize
-			Productfeaturedata := ProductVar[productIndex].Productfeature
+			//Productfeaturedata := ProductVar[productIndex].Productfeature
 
-			fmt.Println(ProductId)
-			fmt.Println(AvailableColorData)
-			fmt.Println(AvailableSizeData)
-			fmt.Println(Productfeaturedata)
+			//fmt.Println(ProductId)
+			//fmt.Println(AvailableColorData)
+			//fmt.Println(AvailableSizeData)
+			//fmt.Println(Productfeaturedata)
 
 			ColorMap = make(map[int]string)
 			for colorIndex := range AvailableColorData{
@@ -145,39 +148,75 @@ func main() {
 			SuitableForData := ProductVar[productIndex].ProductAttribute.SuitableFor
 			fmt.Println(SuitableForData)
 
+			OccassionData := ProductVar[productIndex].Productfeature[2]
+			fmt.Println(OccassionData)
 
+			//if CheckContains(AvailableSizeData, "M") ||
+			//	CheckContains(AvailableSizeData, "L") ||
+			//	CheckContains(AvailableSizeData, "S"){
+			//		Rating++
+			//}
+
+			var sizeCounter int = 0
+			for sIndex := range PreferredSizeData{
+				if CheckContains(AvailableSizeData, PreferredSizeData[sIndex]){
+					sizeCounter++
+				}
+			}
+			if sizeCounter != 0 {
+				Rating++
+			}
+
+			var colorCounter int = 0
+			for cIndex := range PreferredColorData {
+				if CheckContains(AvailableColorData, PreferredColorData[cIndex] ) {
+					colorCounter ++
+				}
+			}
+
+			if colorCounter != 0 {
+				Rating++
+			}
+			var styleCounter int = 0
+			for style := range PreferredStyleData {
+				if PreferredStyleData[style] == SuitableForData {
+					styleCounter++
+				}
+			}
+			if styleCounter != 0 {
+				Rating++
+			}
+
+		ProductRating = make(map[string]int)
+		ProductRating[ProductId] = Rating
 
 		}
 
+		fmt.Println("For userId:", UserId, "the best productId is:", MaximumRating(ProductRating))
 
 	}
 
 
+}
+func MaximumRating(m map[string]int) int {
+	n := map[int][]string{}
+	var a []int
+	for k, v := range m {
+		n[v] = append(n[v], k)
+	}
+	for k := range n {
+		a = append(a, k)
+	}
+	sort.Sort(sort.Reverse(sort.IntSlice(a)))
 
 
-	//fmt.Println(ProductVar[0].AvailableColor[0])
-
-
-
-//		json.Unmarshal([]byte(c), &data)
-//	     fmt.Println(data)
-   //      fmt.Println(data.imageURLs[0])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	return a[0]
+}
+func CheckContains(str []string ,data string ) bool  {
+	for _, strData := range str {
+		if strData == data {
+			return true
+		}
+	}
+	return false
 }
