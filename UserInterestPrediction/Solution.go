@@ -47,6 +47,7 @@ type UserPref []struct {
 
 type ArrayDataType []string
 var UserMap map[string]ArrayDataType
+var ColorMap, SizeMap map[int]string
 
 func main() {
 
@@ -128,6 +129,24 @@ func main() {
 			fmt.Println(AvailableColorData)
 			fmt.Println(AvailableSizeData)
 			fmt.Println(Productfeaturedata)
+
+			ColorMap = make(map[int]string)
+			for colorIndex := range AvailableColorData{
+				ColorMap[colorIndex] = AvailableColorData[colorIndex]
+			}
+			fmt.Println(ColorMap)
+
+			SizeMap = make(map[int]string)
+			for sizeIndex := range AvailableSizeData{
+				SizeMap[sizeIndex] = AvailableSizeData[sizeIndex]
+			}
+			fmt.Println(SizeMap)
+
+			SuitableForData := ProductVar[productIndex].ProductAttribute.SuitableFor
+			fmt.Println(SuitableForData)
+
+
+
 		}
 
 
